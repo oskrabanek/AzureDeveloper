@@ -87,7 +87,6 @@ namespace todo.Models
             }
         }
 
-
         private async Task CreateDocumentCollectionIfNotExists(string databaseName, string collectionName)
         {
             try
