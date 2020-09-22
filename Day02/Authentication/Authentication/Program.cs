@@ -3,6 +3,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Identity.Client;
+using Microsoft.Graph;
+using Microsoft.Graph.Auth;
 
 namespace Authentication
 {
@@ -10,6 +12,8 @@ namespace Authentication
     {
         private const string _tenantId = "DIRECTORY_TENANT_ID";
         private const string _clientId = "APPLICATION_CLIENT_ID";
+
+        private static string[] _scopes = { "user.read" };
 
         public static async Task Main(string[] args)
         {
@@ -20,21 +24,31 @@ namespace Authentication
                     .WithRedirectUri("http://localhost/")
                     .Build();
 
-            string[] scopes = { "user.read" };
-            AuthenticationResult result = await app.AcquireTokenInteractive(scopes).ExecuteAsync();
-            
-            var name = GetName(result.AccessToken);
+            await GetNameFromMSAL(app);
 
-            Console.WriteLine($"Hello {name}");
+            //await GetNameFromGraph(app);
         }
 
-        private static string GetName(string token)
+        private static async Task GetNameFromMSAL(IPublicClientApplication app)
         {
-            var stream = token;
+            AuthenticationResult result = await app.AcquireTokenInteractive(_scopes).ExecuteAsync();
+
+            var stream = result.AccessToken;
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(stream);
             var tokenS = handler.ReadToken(stream) as JwtSecurityToken;
-            return tokenS.Claims.First(claim => claim.Type == "name").Value;
+            var name = tokenS.Claims.First(claim => claim.Type == "name").Value;
+
+            Console.WriteLine($"MSAL: Hello {name}");
+        }
+
+        private static async Task GetNameFromGraph(IPublicClientApplication app)
+        {
+            var provider = new InteractiveAuthenticationProvider(app, _scopes);
+            var client = new GraphServiceClient(provider);
+
+            User me = await client.Me.Request().GetAsync();
+            Console.WriteLine($"Graph: Hello {me.DisplayName}");
         }
     }
 }
