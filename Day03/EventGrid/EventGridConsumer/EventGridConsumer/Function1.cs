@@ -40,7 +40,7 @@ namespace EventGridConsumer
         {
             log.Info($"C# HTTP trigger function begun");
             string response = string.Empty;
-            const string CustomTopicEvent = "Contoso.Items.ItemReceived";
+            const string CustomTopicEvent = "MyBlob.Copied";
 
             string requestContent = await req.Content.ReadAsStringAsync();
             log.Info($"Received events: {requestContent}");
