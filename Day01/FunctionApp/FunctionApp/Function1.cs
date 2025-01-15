@@ -12,6 +12,12 @@ namespace FunctionApp
 {
     public static class Function1
     {
+        /// <summary>
+        /// This is a simple HTTP trigger function that returns a personalized message.
+        /// </summary>
+        /// <param name="req">The HTTP request object.</param>
+        /// <param name="log"></param>
+        /// <returns></returns>
         [FunctionName("Function1")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,

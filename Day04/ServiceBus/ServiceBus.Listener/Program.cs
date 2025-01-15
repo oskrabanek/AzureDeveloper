@@ -8,9 +8,9 @@ namespace ServiceBus.Listener
 {
     public class Program
     {
-        const string ServiceBusConnectionString = "<your_connection_string>";
-        const string TopicName = "<your_topic_name>";
-        const string SubscriptionName = "<your_subscription_name>";
+        const string ServiceBusConnectionString = "<your_connection_string>"; //"Endpoint=sb://sbns-azuredev00.servicebus.windows.net/;SharedAccessKeyName=Consumer;SharedAccessKey=********************";
+        const string TopicName = "<your_topic_name>"; //"sbt-mytopic1";
+        const string SubscriptionName = "<your_subscription_name>"; //"sbts-mysub01";
         static ISubscriptionClient subscriptionClient;
 
         public static async Task Main(string[] args)

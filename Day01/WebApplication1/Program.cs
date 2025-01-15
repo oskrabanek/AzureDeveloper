@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace WebApplication1
@@ -15,7 +16,7 @@ namespace WebApplication1
                 .ConfigureAppConfiguration((context, config) =>
                 {
                     var root = config.Build();
-                    //config.AddAzureKeyVault($"{root["KeyVault:Url"]}", root["KeyVault:ClientId"], root["KeyVault:ClientSecret"]);
+                    //config.AddAzureKeyVault($"{root["KeyVault:Url"]}");
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

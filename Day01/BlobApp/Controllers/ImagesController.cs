@@ -1,29 +1,27 @@
-﻿using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
-using Azure.Storage.Sas;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BlobApp.Controllers
 {
     [ApiController]
-    [Route("/")]
+    [Route("/images")]
     public class ImagesController : ControllerBase
     {
-        private HttpClient _httpClient;
         private Options _options;
 
         public ImagesController(HttpClient httpClient, Options options)
         {
-            _httpClient = httpClient;
             _options = options;
         }
 
-        private async Task<BlobContainerClient> GetCloudBlobContainer(string containerName)
+        private async Task<BlobContainerClient> GetCloudBlobContainerClient(string containerName)
         {
             BlobServiceClient serviceClient = new BlobServiceClient(_options.StorageConnectionString);
             BlobContainerClient containerClient = serviceClient.GetBlobContainerClient(containerName);
@@ -31,11 +29,11 @@ namespace BlobApp.Controllers
             return containerClient;
         }
 
-        [Route("/")]
+        [Route("/names")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<string>>> Get()
+        public async Task<ActionResult<IEnumerable<string>>> GetAllBlobNames()
         {
-            BlobContainerClient containerClient = await GetCloudBlobContainer(_options.FullImageContainerName);
+            BlobContainerClient containerClient = await GetCloudBlobContainerClient(_options.FullImageContainerName);
             BlobServiceClient blobServiceClient = new BlobServiceClient(_options.StorageConnectionString);
 
             BlobClient blobClient;
@@ -63,12 +61,12 @@ namespace BlobApp.Controllers
             return Ok(results);
         }
 
-        [Route("/")]
+        [Route("/blob")]
         [HttpPost]
-        public async Task<ActionResult> Post()
+        public async Task<ActionResult> UploadBlob()
         {
             Stream image = Request.Body;
-            BlobContainerClient containerClient = await GetCloudBlobContainer(_options.FullImageContainerName);
+            BlobContainerClient containerClient = await GetCloudBlobContainerClient(_options.FullImageContainerName);
             string blobName = Guid.NewGuid().ToString().ToLower().Replace("-", String.Empty);
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
             await blobClient.UploadAsync(image);

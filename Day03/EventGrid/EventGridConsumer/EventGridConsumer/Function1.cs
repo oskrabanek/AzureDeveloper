@@ -35,12 +35,19 @@ namespace EventGridConsumer
 {
     public static class Function1
     {
+        const string CustomTopicEvent = "MyBlob.Copied";
+
+        /// <summary>
+        /// This function listens for events from Event Grid and processes them.
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
         [FunctionName("Function1")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
             log.Info($"C# HTTP trigger function begun");
             string response = string.Empty;
-            const string CustomTopicEvent = "MyBlob.Copied";
 
             string requestContent = await req.Content.ReadAsStringAsync();
             log.Info($"Received events: {requestContent}");

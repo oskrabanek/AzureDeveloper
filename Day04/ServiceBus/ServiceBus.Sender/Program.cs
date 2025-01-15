@@ -7,8 +7,8 @@ namespace ServiceBus.Sender
 {
     public class Program
     {
-        const string ServiceBusConnectionString = "<your_connection_string>";
-        const string TopicName = "<your_topic_name>";
+        const string ServiceBusConnectionString = "<your_connection_string>"; //"Endpoint=sb://sbns-azuredev00.servicebus.windows.net/;SharedAccessKeyName=Producer;SharedAccessKey=*************************";
+        const string TopicName = "<your_topic_name>"; //"sbt-mytopic1";
         static ITopicClient topicClient;
 
         public static async Task Main(string[] args)
