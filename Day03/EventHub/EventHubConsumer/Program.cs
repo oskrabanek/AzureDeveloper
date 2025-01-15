@@ -1,26 +1,39 @@
 ﻿using Azure.Messaging.EventHubs.Consumer;
 
-var connectionString = ""; // "Endpoint=sb://evhns-azuredev00.servicebus.windows.net/;SharedAccessKeyName=Consumer;SharedAccessKey=************;EntityPath=evh-azuredev00";
-var eventHubName = ""; //"evh-azuredev00";
+var connectionString = "Endpoint=sb://evhnsazdev00.servicebus.windows.net/;SharedAccessKeyName=listener;SharedAccessKey=******************;EntityPath=evhazdev00";
+var eventHubName = "evhazdev00";
 var consumerGroup = EventHubConsumerClient.DefaultConsumerGroupName;
-
-var consumer = new EventHubConsumerClient(
-    consumerGroup,
-    connectionString,
-    eventHubName);
 
 while (true)
 {
     try
     {
+        await using var consumerClient = new EventHubConsumerClient(
+            consumerGroup,
+            connectionString,
+            eventHubName);
+
         using CancellationTokenSource cancellationSource = new CancellationTokenSource();
-        cancellationSource.CancelAfter(TimeSpan.FromSeconds(45));
+        cancellationSource.CancelAfter(TimeSpan.FromSeconds(5));
 
         int eventsRead = 0;
         int maximumEvents = 3;
 
-        await foreach (PartitionEvent partitionEvent in consumer.ReadEventsAsync(cancellationSource.Token))
+        var partitionIds = await consumerClient.GetPartitionIdsAsync();
+        Console.WriteLine(string.Join(", ", partitionIds));
+
+        var options = new ReadEventOptions
         {
+            MaximumWaitTime = TimeSpan.FromSeconds(1)
+        };
+
+        await foreach (PartitionEvent partitionEvent in consumerClient.ReadEventsAsync(startReadingAtEarliestEvent: true, readOptions: options, cancellationToken: cancellationSource.Token))
+        {
+            if (partitionEvent.Partition is null)
+            {
+                continue;
+            }
+
             string readFromPartition = partitionEvent.Partition.PartitionId;
             byte[] eventBodyBytes = partitionEvent.Data.EventBody.ToArray();
 
@@ -35,6 +48,7 @@ while (true)
     }
     catch (TaskCanceledException)
     {
+        Console.WriteLine("The read operation was canceled. This is expected if the cancellation token is signaled.");
         // This is expected if the cancellation token is
         // signaled.
     }
@@ -45,5 +59,3 @@ while (true)
 
     Thread.Sleep(1000);
 }
-
-await consumer.CloseAsync();

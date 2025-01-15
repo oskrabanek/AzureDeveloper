@@ -1,8 +1,8 @@
 ﻿using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Producer;
 
-var connectionString = ""; //"Endpoint=sb://evhnsazuredev00.servicebus.windows.net/;SharedAccessKeyName=publisher;SharedAccessKey=GF+wHFAQ17u5McPl6eT/j9A1BkO9bkDTMjJ07rQTad8=";
-var eventHubName = ""; //"evhazuredev00";
+var connectionString = "Endpoint=sb://evhnsazdev00.servicebus.windows.net/;SharedAccessKeyName=sender;SharedAccessKey=*****************;EntityPath=evhazdev00";
+var eventHubName = "evhazdev00";
 
 var i = 0;
 while (true)
@@ -20,11 +20,13 @@ while (true)
             throw new Exception($"The event could not be added.");
         }
 
+        await producer.SendAsync(eventBatch);
+
         Console.WriteLine(content);
     }
     catch (Exception ex)
     {
-        Console.WriteLine(ex.Message);
+        Console.WriteLine("error: " + ex.Message);
     }
     finally
     {

@@ -36,9 +36,9 @@ namespace BlobApp.Controllers
             return Ok("ImagesController is running");
         }
 
-        [Route("names")]
+        [Route("links")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<string>>> GetAllBlobNames()
+        public async Task<ActionResult<IEnumerable<string>>> GetAllBlobLinks()
         {
             BlobContainerClient containerClient = await GetCloudBlobContainerClient(_options.FullImageContainerName);
             BlobServiceClient blobServiceClient = new BlobServiceClient(_options.StorageConnectionString);
@@ -72,11 +72,11 @@ namespace BlobApp.Controllers
         [HttpPost]
         public async Task<ActionResult> UploadBlob()
         {
-            Stream image = Request.Body;
+            Stream imageStream = Request.Body;
             BlobContainerClient containerClient = await GetCloudBlobContainerClient(_options.FullImageContainerName);
             string blobName = Guid.NewGuid().ToString().ToLower().Replace("-", String.Empty);
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
-            await blobClient.UploadAsync(image);
+            await blobClient.UploadAsync(imageStream);
             return Created(blobClient.Uri, null);
         }
     }
