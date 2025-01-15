@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace BlobApp.Controllers
 {
     [ApiController]
-    [Route("/tables")]
+    [Route("tables")]
     public class TableController : ControllerBase
     {
         private Options _options;
-        private const string TableName = "my-table";
+        private const string TableName = "mytable";
 
         // Define a strongly typed entity by implementing the ITableEntity interface.
         public class OfficeSupplyEntity : ITableEntity
@@ -32,7 +32,7 @@ namespace BlobApp.Controllers
             _options = options;
         }
 
-        [Route("/")]
+        [Route("")]
         [HttpGet]
         public ActionResult<string> Get()
         {

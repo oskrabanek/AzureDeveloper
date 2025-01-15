@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BlobApp.Controllers
 {
     [ApiController]
-    [Route("/images")]
+    [Route("images")]
     public class ImagesController : ControllerBase
     {
         private Options _options;
@@ -29,7 +29,14 @@ namespace BlobApp.Controllers
             return containerClient;
         }
 
-        [Route("/names")]
+        [Route("")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<string>>> Get()
+        {
+            return Ok("ImagesController is running");
+        }
+
+        [Route("names")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<string>>> GetAllBlobNames()
         {
@@ -61,7 +68,7 @@ namespace BlobApp.Controllers
             return Ok(results);
         }
 
-        [Route("/blob")]
+        [Route("blob")]
         [HttpPost]
         public async Task<ActionResult> UploadBlob()
         {
